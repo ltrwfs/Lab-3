@@ -1,59 +1,70 @@
 import tkinter as tk
+import random as rn
 from tkinter import messagebox
-from sqrEq import sqrEquation
 
 
 def close():
     window.destroy()
 
 
-def calc():
-    A = float(arg_A.get())
-    B = float(arg_B.get())
-    C = float(arg_C.get())
-    if A == 0.0:
-        tk.messagebox.showwarning('Error', 'Division by zero!')
+def key_generate():
+    code = arg_input.get()
+    if len(code) != 5:
+        tk.messagebox.showwarning('Error', 'Incorrect Code')
     else:
-        lbl_result.configure(text=sqrEquation(A, B, C))
+        try:
+            code = int(code, 16)
+            key = ['', '', '']
+
+            symbols = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+            for num in range(12):
+                index = rn.randint(0, 35)
+                key[num//4] += str(symbols[index])
+
+            for block in range(3):
+                pos = rn.randint(0, 3)
+                key[block] = (key[block][:pos]
+                              +str(code)[block]
+                              +key[block][pos:])
+
+            key = (key[0] + '-'
+                   +key[1] + '-'
+                   +key[2] + ' '
+                   +str(code)[-2]
+                   +str(code)[-1])
+            lbl_result.configure(text=key)
+        except:
+            tk.messagebox.showwarning('Error', 'Incorrect Code')
 
 
 window = tk.Tk()
-window.geometry('576x360')
-bg_img = tk.PhotoImage(file='bg_pic.png')
+window.title('GTA SA Key Generator')
+icon = tk.PhotoImage(file = "icon.png")
+window.iconphoto(True, icon)
+window.geometry('650x490')
+window.resizable(False, False)
 
+bg_img = tk.PhotoImage(file='background.png')
 lbl_bg = tk.Label(window, image=bg_img)
 lbl_bg.place(x=0, y=0, relwidth=1, relheight=1)
 
 frame = tk.Frame(window)
-frame.place(relx=0.5, rely=0.5, anchor='center')
+frame.place(relx=0.25, rely=0.5, anchor='center')
 
-lbl_A = tk.Label(frame, text='A', font=('Arial', 30), bg='blue', fg='white')
-lbl_A.grid(column=0, row=0, padx=10, pady=15)
-arg_A = tk.Entry(frame, width=10)
-arg_A.insert(0, '1')
-arg_A.grid(column=0, row=1, padx=10, pady=15)
+lbl_input = tk.Label(frame,
+                     text='Введите 5-значное HEX-число',
+                     font=('Arial', 10),
+                     anchor='center')
+lbl_input.grid(column=0, row=0, padx=10, pady=15)
+arg_input = tk.Entry(frame, width=10)
+arg_input.grid(column=0, row=1, padx=10, pady=15)
 
-lbl_B = tk.Label(frame, text='B', font=('Arial', 30))
-lbl_B.grid(column=1, row=0, padx=10, pady=15)
-arg_B = tk.Entry(frame, width=10)
-arg_B.insert(0, '0')
-arg_B.grid(column=1, row=1, padx=10, pady=15)
+lbl_result = tk.Label(frame, text='', font=('Arial', 10))
+lbl_result.grid(column=0, row=2)
 
-lbl_C = tk.Label(frame, text='C', font=('Arial', 30))
-lbl_C.grid(column=2, row=0, padx=10, pady=15)
-arg_C = tk.Entry(frame, width=10)
-arg_C.insert(0, '0')
-arg_C.grid(column=2, row=1, padx=10, pady=15)
-
-lbl_roots = tk.Label(frame, text='Result:')
-lbl_roots.grid(column=1, row=2)
-lbl_result = tk.Label(frame, text='None yet.', font=('Arial', 10))
-lbl_result.grid(column=2, row=2)
-
-btn_calc = tk.Button(frame, text='Calculate', command=calc)
-btn_calc.grid(column=0, row=3, padx=10, pady=15)
-btn_exit = tk.Button(frame, text='Cancel', command=close)
-btn_exit.grid(column=2, row=3, padx=10, pady=15)
-
+btn_gen = tk.Button(frame, text='Generate Key', command=key_generate)
+btn_gen.grid(column=0, row=3, padx=20, pady=15)
+btn_exit = tk.Button(window, text='Close', command=close)
+btn_exit.pack(anchor='ne', padx=10, pady=10)
 
 window.mainloop()
