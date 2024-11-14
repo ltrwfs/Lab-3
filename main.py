@@ -1,5 +1,6 @@
 import tkinter as tk
 import random as rn
+import pygame
 from tkinter import messagebox
 
 
@@ -44,12 +45,16 @@ window.iconphoto(True, icon)
 window.geometry('650x490')
 window.resizable(False, False)
 
+pygame.mixer.init()
+pygame.mixer.music.load("music.mp3")
+pygame.mixer.music.play(-1)
+
 bg_img = tk.PhotoImage(file='background.png')
 lbl_bg = tk.Label(window, image=bg_img)
 lbl_bg.place(x=0, y=0, relwidth=1, relheight=1)
 
 frame = tk.Frame(window)
-frame.place(relx=0.25, rely=0.5, anchor='center')
+frame.place(relx=0.26, rely=0.5, anchor='center')
 
 lbl_input = tk.Label(frame,
                      text='Введите 5-значное HEX-число',
